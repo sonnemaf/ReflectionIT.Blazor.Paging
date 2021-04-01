@@ -7,7 +7,7 @@ Paging solution for Blazor WebAssembly using OData or Web API
 Paging is a very common pattern in Web Applications. Most paging solutions I found for Blazor are related to a DataGrid. This is not what I wanted. So I created my own solution which only supports paging including filtering and sorting. It uses OData or a Web API to retrieve the data from a server. It is loosly based on the [ReflectionIT.MVC.Paging](https://github.com/sonnemaf/ReflectionIT.Mvc.Paging) solution which I developed many years ago.
 
 # Live Demo
-Try this [live demo](https://northwindfons.azurewebsites.net/)
+Try this [live demo](https://northwindfons.azurewebsites.net/). It uses OData endpoints for Suppliers and Products and a Web API endpoint for Products, see [Swagger UI](https://northwindfons.azurewebsites.net/swagger). The data is stored in a Northwind database on Azure. You can only read the data. Insert, Update and Delete will give you a 500 statuscode.
 
 ![Suppliers screenshot](Images/Suppliers.png)
 
