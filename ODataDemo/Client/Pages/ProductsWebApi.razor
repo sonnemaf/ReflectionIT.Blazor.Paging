@@ -84,7 +84,7 @@
 
     public void ApplyFilter() {
         this.Service.SetQueryFilter("ProductName", ProductName);
-        _ = this.Service.ExecuteAsync(pageIndex: 1);
+        this.Service.ReExecute();
     }
 
 }

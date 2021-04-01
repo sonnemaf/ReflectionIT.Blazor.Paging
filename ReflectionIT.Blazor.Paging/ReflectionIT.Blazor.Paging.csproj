@@ -12,8 +12,10 @@
     <RepositoryUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</RepositoryUrl>
     <RepositoryType></RepositoryType>
     <PackageTags>csharp web-api bootstrap4 asp-net-core odata paging blazor-webassembly</PackageTags>
-    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <PackageReleaseNotes>ReExecute method added in PagingClient</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 
