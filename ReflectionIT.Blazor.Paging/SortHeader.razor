@@ -1,0 +1,40 @@
+﻿@using ReflectionIT.Blazor.Paging
+@using System.Diagnostics.CodeAnalysis
+
+@{
+    var sort = PagingList.Sorts[SortKey];
+    var isDescending = PagingList.SortExpression?.StartsWith('-') ?? false;
+    if (sort.IsDecending) {
+        isDescending = !isDescending;
+    }
+}
+<a href="@PagingList.GetHref(SortKey)" class="sort-header" title="Sort on @(sort.Text)">
+    @sort.Text
+    @if (PagingList.SortExpression == SortKey || PagingList.SortExpression == "-" + SortKey) {
+        if (isDescending) {
+            <span class="@CssDescending" aria-hidden="true"></span>
+        } else {
+            <span class="@CssAcending" aria-hidden="true"></span>
+        }
+    } 
+</a>
+
+@code {
+
+    [Parameter]
+    [AllowNull]
+    public ISortablePagingList PagingList { get; set; }
+
+    [Parameter]
+    [AllowNull]
+    public string SortKey { get; set; }
+
+    [Parameter]
+    [AllowNull]
+    public string CssDescending { get; set; } = "oi oi-chevron-top";
+
+    [Parameter]
+    [AllowNull]
+    public string CssAcending { get; set; } = "oi oi-chevron-bottom";
+
+}

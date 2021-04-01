@@ -1,0 +1,89 @@
+﻿@using ReflectionIT.Blazor.Paging
+@using System.Diagnostics.CodeAnalysis
+@using Microsoft.AspNetCore.Components.Routing
+
+
+@if (this.PagingList?.PageCount > 1) {
+
+    var start = this.StartPageIndex;
+    var stop = this.StopPageIndex;
+
+    <ul class="pagination">
+
+        @if (this.ShowFirstAndLastButtons && start > 1) {
+            <li class="page-item">
+                <a href="@PagingList.GetHref(1)" aria-label="First" class="page-link">
+                    <span aria-hidden="true">1</span>
+                </a>
+            </li>
+        }
+
+        @if (ShowPreviousAndNextButtons && this.PagingList.PageIndex > 1) {
+            <li class="page-item">
+                <a href="@PagingList.GetHref(PagingList.PageIndex - 1)" aria-label="Previous" class="page-link">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+
+        @if (ShowPageButtons) {
+            for (int i = start; i <= stop; i++) {
+                int t = i;
+                <li class="page-item @((PagingList.PageIndex == i) ? "active" : null)">
+                    <a href="@PagingList.GetHref(t)" class="page-link">
+                        <span aria-hidden="true">@t</span>
+                    </a>
+                </li>
+            }
+        }
+
+        @if (ShowPreviousAndNextButtons && this.PagingList.PageIndex < this.PagingList.PageCount) {
+            <li class="page-item">
+                <a href="@PagingList.GetHref(PagingList.PageIndex + 1)" aria-label="Next" class="page-link">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+
+        @if (ShowFirstAndLastButtons && stop < this.PagingList.PageCount) {
+            <li class="page-item">
+                <a href="@PagingList.GetHref(PagingList.PageCount)" aria-label="Last" class="page-link">
+                    <span aria-hidden="true">@this.PagingList.PageCount</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+}
+
+@code {
+    [Parameter]
+    [AllowNull]
+    public IPagingList PagingList { get; set; }
+
+    [Parameter]
+    public bool ShowFirstAndLastButtons { get; set; } = true;
+
+    [Parameter]
+    public bool ShowPreviousAndNextButtons { get; set; } = true;
+
+    [Parameter]
+    public bool ShowPageButtons { get; set; } = true;
+
+    [Parameter]
+    public int NumberOfPagesToShow { get; set; } = 5;
+
+    protected int StartPageIndex {
+        get {
+            var half = (int)((this.NumberOfPagesToShow - 0.5) / 2);
+            var start = Math.Max(1, this.PagingList.PageIndex - half);
+            if (start + this.NumberOfPagesToShow - 1 > this.PagingList.PageCount) {
+                start = this.PagingList.PageCount - this.NumberOfPagesToShow + 1;
+            }
+            return Math.Max(1, start);
+        }
+    }
+
+    protected int StopPageIndex => Math.Min(this.PagingList.PageCount, this.StartPageIndex + this.NumberOfPagesToShow - 1);
+
+}

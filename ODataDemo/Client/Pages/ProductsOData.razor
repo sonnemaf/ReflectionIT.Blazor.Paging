@@ -1,0 +1,96 @@
+﻿@page "/products"
+@using ReflectionIT.Blazor.Paging
+
+@inherits OwningComponentBase<IODataPagingClient<Product>>
+
+<h1>Products using OData</h1>
+
+<form class="mb-4">
+    <div class="form-group row">
+        <label for="productName" class="col-md-2">ProductName</label>
+        <input id="productName" @bind="ProductName" class="form-control col-md-6" />
+    </div>
+    <div class="form-group row">
+        <label for="sort" class="col-md-2">Sort</label>
+        <select @bind="Service.SortExpression" class="form-control col-md-6" id="sort">
+            @foreach (var item in Service.Sorts) {
+                <option value="@item.Key">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group row">
+        <button @onclick="Search" @onclick:preventDefault
+                type="submit" class="btn btn-primary offset-md-2">
+            Search
+        </button>
+    </div>
+</form>
+
+@if (!this.Service.IsExecuted) {
+    <p><em>Loading...</em></p>
+} else {
+    <nav aria-label="Page navigate product">
+        <Pager PagingList="@Service" />
+    </nav>
+    <table class="table table-striped table-responsive-md btn-table">
+        <thead>
+            <tr>
+                <th>ProductName</th>
+                <th>Category</th>
+                <th>UnitPrice</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in this.Service) {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Category.CategoryName</td>
+                    <td>@item.UnitPrice?.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigate product">
+        <Pager PagingList="@Service" NumberOfPagesToShow="4" ShowFirstAndLastButtons="false" />
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public string ProductName { get; set; } = string.Empty;
+
+    protected override void OnInitialized() {
+        this.Service.Path = "odata/products";
+        this.Service.Select = "ProductId,ProductName,UnitPrice";
+        this.Service.Expand = "Category($select=CategoryName)";
+
+        this.Service.PageSize = 8;
+        this.Service.Filter = pc => {
+            var pn = pc.GetQueryFilter("ProductName", string.Empty);
+            if (!string.IsNullOrEmpty(pn)) {
+                return $"&$filter=contains(ProductName,\'{pn}\')";
+            }
+            return string.Empty;
+        };
+
+        this.Service.Sorts.Add(new Sort("ProductName"));
+        this.Service.Sorts.Add(new Sort("UnitPrice (ascending)", "UnitPrice"));
+        this.Service.Sorts.Add(new Sort("UnitPrice (descending)", "UnitPrice desc"));
+
+        this.Service.CollectionChanged += CollectionChanged;
+
+        this.ProductName = this.Service.GetQueryFilter("ProductName", string.Empty);
+    }
+
+    private void CollectionChanged(object sender, EventArgs e) => this.StateHasChanged();
+
+    protected override async Task OnInitializedAsync() {
+        await this.Service.ExecuteAsync();
+    }
+
+    public void Search() {
+        this.Service.SetQueryFilter("ProductName", ProductName);
+        _ = this.Service.ExecuteAsync(pageIndex: 1);
+    }
+
+}

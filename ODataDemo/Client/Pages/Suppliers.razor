@@ -1,0 +1,90 @@
+﻿@page "/suppliers"
+@using ReflectionIT.Blazor.Paging
+
+@inject IODataPagingClient<Supplier> PagingClient
+@implements IDisposable
+
+<h1>Suppliers</h1>
+
+<form class="mb-4">
+    <div class="form-group row">
+        <label for="companyName" class="col-md-2">CompanyName</label>
+        <input id="companyName" @bind="CompanyName" class="form-control col-md-6" />
+    </div>
+    <div class="form-group row">
+        <button @onclick="Search" @onclick:preventDefault
+                type="submit" class="btn btn-primary offset-md-2">
+            Search
+        </button>
+    </div>
+</form>
+
+@if (!this.PagingClient.IsExecuted) {
+    <p><em>Loading...</em></p>
+} else {
+
+    <table class="table table-striped table-responsive-md btn-table">
+        <thead>
+            <tr>
+                <th><SortHeader PagingList="PagingClient" SortKey="CompanyName" /></th>
+                <th><SortHeader PagingList="PagingClient" SortKey="City" /></th>
+                <th><SortHeader PagingList="PagingClient" SortKey="Country" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in this.PagingClient) {
+                <tr>
+                    <td>@item.CompanyName</td>
+                    <td>@item.City</td>
+                    <td>@item.Country</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigate supplier">
+        <Pager PagingList="@PagingClient" ShowFirstAndLastButtons="false" />
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public string CompanyName { get; set; } = string.Empty;
+
+    protected override void OnInitialized() {
+        this.PagingClient.Path = "odata/suppliers";
+        this.PagingClient.Select = "SupplierId,CompanyName,City,Country";
+        this.PagingClient.PageSize = 5;
+
+        this.PagingClient.Filter = pc => {
+            var cn = pc.GetQueryFilter("CompanyName", string.Empty);
+            if (!string.IsNullOrEmpty(cn)) {
+                return $"&$filter=contains(CompanyName,\'{cn}\')";
+            }
+            return string.Empty;
+        };
+
+        this.PagingClient.Sorts.Add(new Sort("CompanyName"));
+        this.PagingClient.Sorts.Add(new Sort("City", "City,CompanyName desc"));
+        this.PagingClient.Sorts.Add(new Sort("Country", "Country desc,CompanyName"));
+
+        this.PagingClient.CollectionChanged += CollectionChanged;
+
+        this.CompanyName = this.PagingClient.GetQueryFilter("CompanyName", string.Empty);
+    }
+
+    private void CollectionChanged(object sender, EventArgs e) => this.StateHasChanged();
+
+    protected override async Task OnInitializedAsync() {
+        await this.PagingClient.ExecuteAsync();
+    }
+
+    public async void Search() {
+        this.PagingClient.SetQueryFilter("CompanyName", CompanyName);
+        await this.PagingClient.ExecuteAsync(pageIndex: 1);
+    }
+
+    public void Dispose() {
+        this.PagingClient.CollectionChanged -= CollectionChanged;
+        this.PagingClient.Dispose();
+    }
+}
