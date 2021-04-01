@@ -16,5 +16,6 @@ namespace ReflectionIT.Blazor.Paging {
         public int PageSize { get; set; }
 
         Task ExecuteAsync(string? sortExpression = default, int? pageIndex = default);
+
     }
 }

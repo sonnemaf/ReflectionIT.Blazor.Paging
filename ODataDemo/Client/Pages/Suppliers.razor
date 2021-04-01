@@ -9,7 +9,7 @@
 <form class="mb-4">
     <div class="form-group row">
         <label for="companyName" class="col-md-3 col-form-label">CompanyName</label>
-        <input id="companyName" @bind="CompanyName" class="form-control col-md-6" placeholder="Enter your filter here"/>
+        <input id="companyName" @bind="CompanyName" class="form-control col-md-6" placeholder="Enter your filter here" />
     </div>
     <div class="form-group row">
         <button @onclick="ApplyFilter" @onclick:preventDefault
@@ -57,10 +57,7 @@
 
         this.PagingClient.Filter = pc => {
             var cn = pc.GetQueryFilter("CompanyName", string.Empty);
-            if (!string.IsNullOrEmpty(cn)) {
-                return $"&$filter=contains(CompanyName,\'{cn}\')";
-            }
-            return string.Empty;
+            return !string.IsNullOrEmpty(cn) ? $"&$filter=contains(CompanyName,\'{cn}\')" : string.Empty;
         };
 
         this.PagingClient.Sorts.Add(new Sort("CompanyName"));

@@ -13,13 +13,14 @@ namespace ReflectionIT.Blazor.Paging {
 
     public class PagingClient<TModel, TResponse> : IPagingClient<TModel>, IDisposable where TModel : class where TResponse : IPagedResponse<TModel> {
 
-        private bool _isDisposed;
-        private readonly HttpClient _client;
-        private TModel[] _data = Array.Empty<TModel>();
+        private bool _isExecuting;
 
+        protected bool IsDisposed { get; set; }
+        protected HttpClient Client { get; }
+        protected TModel[] Data { get; set; } = Array.Empty<TModel>();
         protected Dictionary<string, string> QueryStrings { get; } = new();
-        public Func<IPagingClient<TModel>, string>? Filter { get; set; }
 
+        public Func<IPagingClient<TModel>, string>? Filter { get; set; }
         public SortCollection Sorts { get; } = new SortCollection();
         public int TotalRecordCount { get; private set; }
         public bool IsExecuted { get; private set; }
@@ -36,7 +37,7 @@ namespace ReflectionIT.Blazor.Paging {
         }
 
         public PagingClient(HttpClient client, NavigationManager navMan) {
-            this._client = client;
+            this.Client = client;
             this.NavMan = navMan;
             this.NavMan.LocationChanged += NavMan_LocationChanged;
             InitFromUri(NavMan.Uri);
@@ -66,30 +67,41 @@ namespace ReflectionIT.Blazor.Paging {
         }
 
         public async Task ExecuteAsync(string? sortExpression = default, int? pageIndex = default) {
-            if (pageIndex.HasValue) {
-                PageIndex = pageIndex.Value;
-            }
-            if (sortExpression is not null) {
-                SortExpression = sortExpression;
-            }
-            if (SortExpression is null) {
-                SortExpression = this.Sorts[0].Key;
-            }
+            try {
+                if (!_isExecuting) {
+                    _isExecuting = true;
+                    if (pageIndex.HasValue) {
+                        PageIndex = pageIndex.Value;
+                    }
+                    if (sortExpression is not null) {
+                        SortExpression = sortExpression;
+                    }
+                    if (SortExpression is null) {
+                        SortExpression = this.Sorts[0].Key;
+                    }
 
-            var url = CreateUrl().ToString();
+                    if (IsExecuted) {
+                        this.NavMan.NavigateTo(GetHref(1), false);
+                    }
 
-            var result = await _client.GetFromJsonAsync<TResponse>(url);
+                    var url = CreateUrl().ToString();
 
-            if (result is not null) {
-                _data = result.Value ?? Array.Empty<TModel>();
-                TotalRecordCount = result.Count;
-            } else {
-                _data = Array.Empty<TModel>();
-                TotalRecordCount = 0;
+                    var result = await Client.GetFromJsonAsync<TResponse>(url);
+
+                    if (result is not null) {
+                        Data = result.Value ?? Array.Empty<TModel>();
+                        TotalRecordCount = result.Count;
+                    } else {
+                        Data = Array.Empty<TModel>();
+                        TotalRecordCount = 0;
+                    }
+
+                    IsExecuted = true;
+                    OnCollectionChanged();
+                }
+            } finally {
+                _isExecuting = false;
             }
-
-            IsExecuted = true;
-            OnCollectionChanged();
         }
 
         protected virtual StringBuilder CreateUrl() {
@@ -109,13 +121,13 @@ namespace ReflectionIT.Blazor.Paging {
 
         public int PageCount => (int)Math.Ceiling(TotalRecordCount / (double)PageSize);
 
-        public int Count => IsExecuted ? _data.Length : -1;
+        public int Count => IsExecuted ? Data.Length : -1;
 
-        public TModel this[int index] => IsExecuted ? _data[index] : throw new InvalidOperationException("ODataPagingCollection must be executed first");
+        public TModel this[int index] => IsExecuted ? Data[index] : throw new InvalidOperationException("ODataPagingCollection must be executed first");
 
-        public IEnumerator<TModel> GetEnumerator() => _data == null ? Enumerable.Empty<TModel>().GetEnumerator() : ((IEnumerable<TModel>)this._data).GetEnumerator();
+        public IEnumerator<TModel> GetEnumerator() => Data == null ? Enumerable.Empty<TModel>().GetEnumerator() : ((IEnumerable<TModel>)this.Data).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => this._data.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this.Data.GetEnumerator();
 
         public string GetHref() => GetHref(this.PageIndex);
 
@@ -144,17 +156,18 @@ namespace ReflectionIT.Blazor.Paging {
 
 
         public void Dispose() {
-            _isDisposed = true;
+            IsDisposed = true;
             this.NavMan.LocationChanged -= NavMan_LocationChanged;
             GC.SuppressFinalize(this);
         }
 
         private async void NavMan_LocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) {
-            if (!_isDisposed) {
+            if (!IsDisposed && !_isExecuting) {
                 InitFromUri(e.Location);
                 await this.ExecuteAsync();
             }
         }
+
     }
 
 }

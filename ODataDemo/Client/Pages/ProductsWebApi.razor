@@ -64,10 +64,7 @@
         this.Service.PageSize = 8;
         this.Service.Filter = pc => {
             var pn = pc.GetQueryFilter("ProductName", string.Empty);
-            if (!string.IsNullOrEmpty(pn)) {
-                return $"&ProductNameFilter={pn}";
-            }
-            return string.Empty;
+            return !string.IsNullOrEmpty(pn) ? $"&ProductNameFilter={pn}" : string.Empty;
         };
 
         this.Service.Sorts.Add(new Sort("ProductName"));
