@@ -42,7 +42,7 @@ namespace ODataDemo.Server {
                     .AddModel("odata", GetEdmModel())
             );
 
-            IEdmModel GetEdmModel() {
+            static IEdmModel GetEdmModel() {
                 var builder = new ODataConventionModelBuilder();
 
                 builder.EntitySet<Supplier>("Suppliers");
@@ -56,16 +56,14 @@ namespace ODataDemo.Server {
 
             services.AddSwaggerGen((config) => {
                 config.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() {
-                    Title = "Swagger Odata Demo Api",
-                    Description = "Swagger Odata Demo",
+                    Title = "Swagger OData Demo Api",
+                    Description = "Swagger OData Demo",
                     Version = "v1"
                 });
             });
 
             services.AddOdataSwaggerSupport();
         }
-
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
