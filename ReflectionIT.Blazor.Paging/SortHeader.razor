@@ -1,7 +1,4 @@
-﻿@using ReflectionIT.Blazor.Paging
-@using System.Diagnostics.CodeAnalysis
-
-@{
+﻿@{
     var sort = PagingList.Sorts[SortKey];
     var isDescending = PagingList.SortExpression?.StartsWith('-') ?? false;
     if (sort.IsDecending) {

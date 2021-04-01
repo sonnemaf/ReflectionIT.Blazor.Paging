@@ -7,11 +7,11 @@
 
 <form class="mb-4">
     <div class="form-group row">
-        <label for="productName" class="col-md-2">ProductName</label>
-        <input id="productName" @bind="ProductName" class="form-control col-md-6" />
+        <label for="productName" class="col-md-3 col-form-label">ProductName</label>
+        <input id="productName" @bind="ProductName" class="form-control col-md-6" placeholder="Enter your filter here" />
     </div>
     <div class="form-group row">
-        <label for="sort" class="col-md-2">Sort</label>
+        <label for="sort" class="col-md-3 col-form-label">Sort</label>
         <select @bind="Service.SortExpression" class="form-control col-md-6" id="sort">
             @foreach (var item in Service.Sorts) {
                 <option value="@item.Key">@item.Text</option>
@@ -19,9 +19,9 @@
         </select>
     </div>
     <div class="form-group row">
-        <button @onclick="Search" @onclick:preventDefault
-                type="submit" class="btn btn-primary offset-md-2">
-            Search
+        <button @onclick="ApplyFilter" @onclick:preventDefault
+                type="submit" class="btn btn-primary offset-md-3">
+            Apply filter and sort
         </button>
     </div>
 </form>
@@ -85,7 +85,7 @@
         await this.Service.ExecuteAsync();
     }
 
-    public void Search() {
+    public void ApplyFilter() {
         this.Service.SetQueryFilter("ProductName", ProductName);
         _ = this.Service.ExecuteAsync(pageIndex: 1);
     }
