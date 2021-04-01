@@ -9,6 +9,8 @@ Paging is a very common pattern in Web Applications. Most paging solutions I fou
 # Live Demo
 Try this [live demo](https://northwindfons.azurewebsites.net/)
 
+![Suppliers screenshot](Images/Suppliers.png)
+
 ## <a id="features">What's in the box</a>
 Information on what's contained within this package will be coming soon. Please check back later.
 
