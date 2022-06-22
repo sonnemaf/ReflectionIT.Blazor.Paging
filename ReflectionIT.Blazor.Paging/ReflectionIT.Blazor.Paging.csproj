@@ -11,17 +11,16 @@
 		<PackageProjectUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</RepositoryUrl>
 		<RepositoryType></RepositoryType>
-		<PackageTags>csharp web-api bootstrap4 asp-net-core odata paging blazor-webassembly</PackageTags>
-		<PackageReleaseNotes>ReExecute method added in PagingClient</PackageReleaseNotes>
+		<PackageTags>csharp web-api bootstrap asp-net-core odata paging blazor-webassembly</PackageTags>
+		<PackageReleaseNotes>Upgrade to .NET 6 and dropped .NET 5 because it is out of support</PackageReleaseNotes>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<Version>1.1.0</Version>
-		<AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<Version>2.0.0</Version>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 	</PropertyGroup>
 
-
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.*" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
 	</ItemGroup>
 
