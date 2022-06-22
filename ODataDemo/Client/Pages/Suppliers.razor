@@ -75,13 +75,15 @@
         await this.PagingClient.ExecuteAsync();
     }
 
-    public async void ApplyFilter() {
+    public void ApplyFilter() {
         this.PagingClient.SetQueryFilter("CompanyName", CompanyName);
-        await this.PagingClient.ExecuteAsync(pageIndex: 1);
+        this.PagingClient.ReExecute();
     }
 
     public void Dispose() {
         this.PagingClient.CollectionChanged -= CollectionChanged;
         this.PagingClient.Dispose();
     }
+
+
 }

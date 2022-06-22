@@ -80,10 +80,6 @@ namespace ReflectionIT.Blazor.Paging {
                         SortExpression = this.Sorts[0].Key;
                     }
 
-                    if (IsExecuted) {
-                        this.NavMan.NavigateTo(GetHref(1), false);
-                    }
-
                     var url = CreateUrl().ToString();
 
                     var result = await Client.GetFromJsonAsync<TResponse>(url);
@@ -133,10 +129,15 @@ namespace ReflectionIT.Blazor.Paging {
 
         public string GetHref(int pageIndex) {
             var uri = NavMan.ToAbsoluteUri(NavMan.Uri).GetLeftPart(UriPartial.Path);
-            uri = QueryHelpers.AddQueryString(uri, new Dictionary<string, string>(QueryStrings) {
-                ["sort"] = this.SortExpression ?? string.Empty,
-                ["pageIndex"] = pageIndex.ToString(),
-            });
+
+            var queryString = new Dictionary<string, string>(QueryStrings);
+            if (this.SortExpression != this.Sorts[0].SortExpression) {
+                queryString["sort"] = this.SortExpression ?? string.Empty;
+            };
+            if (pageIndex > 1) {
+                queryString["pageIndex"] = pageIndex.ToString();
+            }
+            uri = QueryHelpers.AddQueryString(uri, queryString);
             return uri;
         }
 
@@ -145,12 +146,14 @@ namespace ReflectionIT.Blazor.Paging {
                 // Toggle Ascending/Decending
                 sortExpression = sortExpression[0] == '-' ? sortExpression[1..] : "-" + sortExpression;
             }
-
             var uri = NavMan.ToAbsoluteUri(NavMan.Uri).GetLeftPart(UriPartial.Path);
-            uri = QueryHelpers.AddQueryString(uri, new Dictionary<string, string>(QueryStrings) {
-                ["sort"] = sortExpression,
-                ["pageIndex"] = "1",
-            });
+            var queryString = new Dictionary<string, string>(QueryStrings);
+            
+            if (sortExpression != this.Sorts[0].SortExpression) {
+                queryString["sort"] = sortExpression ?? string.Empty;
+            };
+            
+            uri = QueryHelpers.AddQueryString(uri, queryString);
             return uri;
         }
 
@@ -162,12 +165,15 @@ namespace ReflectionIT.Blazor.Paging {
         }
 
         private async void NavMan_LocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) {
-            if (!IsDisposed && !_isExecuting) {
+            if (!IsDisposed) {
                 InitFromUri(e.Location);
                 await this.ExecuteAsync();
             }
         }
 
+        public void ReExecute() {
+            this.NavMan.NavigateTo(GetHref(1), false);
+        }
     }
 
 }

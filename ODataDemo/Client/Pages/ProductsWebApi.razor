@@ -68,8 +68,8 @@
         };
 
         this.Service.Sorts.Add(new Sort("ProductName"));
-        this.Service.Sorts.Add(new Sort("UnitPrice (ascending)", "UnitPrice"));
-        this.Service.Sorts.Add(new Sort("UnitPrice (descending)", "UnitPrice desc"));
+        this.Service.Sorts.Add(new Sort("UnitPriceA", "UnitPrice", "UnitPrice (ascending)"));
+        this.Service.Sorts.Add(new Sort("UnitPriceD", "UnitPrice desc", "UnitPrice (descending)"));
 
         this.Service.CollectionChanged += CollectionChanged;
 
@@ -84,7 +84,7 @@
 
     public void ApplyFilter() {
         this.Service.SetQueryFilter("ProductName", ProductName);
-        _ = this.Service.ExecuteAsync(pageIndex: 1);
+        this.Service.ReExecute();
     }
 
 }
