@@ -42,11 +42,7 @@ namespace ODataDemo.Server.Controllers.Api {
         public async Task<ActionResult<Product>> GetProduct(int id) {
             var product = await _context.Products.FindAsync(id);
 
-            if (product == null) {
-                return NotFound();
-            }
-
-            return product;
+            return product == null ? (ActionResult<Product>)NotFound() : (ActionResult<Product>)product;
         }
 
         // PUT: api/Products/5

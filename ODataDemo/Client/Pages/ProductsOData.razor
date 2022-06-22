@@ -61,9 +61,8 @@
 
     protected override void OnInitialized() {
         this.Service.Path = "odata/products";
-        this.Service.Select = "ProductId,ProductName,UnitPrice";
+        this.Service.Select = "ProductId,ProductName,UnitPrice,Category";
         this.Service.Expand = "Category($select=CategoryName)";
-
         this.Service.PageSize = 8;
         this.Service.Filter = pc => {
             var pn = pc.GetQueryFilter("ProductName", string.Empty);

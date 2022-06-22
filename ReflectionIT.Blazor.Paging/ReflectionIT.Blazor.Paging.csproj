@@ -1,36 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Fons Sonnemans</Authors>
-    <Company>Reflection IT</Company>
-    <Description>Paging solution for Blazor WebAssembly using OData or Web API</Description>
-    <Copyright>Reflection IT</Copyright>
-    <PackageProjectUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</RepositoryUrl>
-    <RepositoryType></RepositoryType>
-    <PackageTags>csharp web-api bootstrap4 asp-net-core odata paging blazor-webassembly</PackageTags>
-    <PackageReleaseNotes>ReExecute method added in PagingClient</PackageReleaseNotes>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Authors>Fons Sonnemans</Authors>
+		<Company>Reflection IT</Company>
+		<Description>Paging solution for Blazor WebAssembly using OData or Web API</Description>
+		<Copyright>Reflection IT</Copyright>
+		<PackageProjectUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/sonnemaf/ReflectionIT.Blazor.Paging</RepositoryUrl>
+		<RepositoryType></RepositoryType>
+		<PackageTags>csharp web-api bootstrap4 asp-net-core odata paging blazor-webassembly</PackageTags>
+		<PackageReleaseNotes>ReExecute method added in PagingClient</PackageReleaseNotes>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Version>1.1.0</Version>
+		<AssemblyVersion>1.1.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 
 	<ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-	  <None Include="..\LICENSE">
-	    <Pack>True</Pack>
-	    <PackagePath></PackagePath>
-	  </None>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 
 </Project>

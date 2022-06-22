@@ -25,34 +25,24 @@ namespace ODataDemo.Server {
         public void ConfigureServices(IServiceCollection services) {
 
             services.AddControllersWithViews();
-
-            //    .AddNewtonsoftJson(setupAction => {
-            //    setupAction.SerializerSettings.ContractResolver =
-            //        new CamelCasePropertyNamesContractResolver();
-            //});
-            
             services.AddRazorPages();
 
             services.AddDbContext<NorthwindContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("NorthwindDbContext")));
 
+            //services.AddControllers().AddOData(options =>
+            //    options.Count().Filter().Expand().Select().OrderBy().SetMaxTop(50)
+            //);
+            
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel())
+                                                         .Count()
+                                                         .Filter()
+                                                         .Expand()
+                                                         .Select()
+                                                         .OrderBy()
+                                                         .SetMaxTop(50));
 
-            services.AddOData(opt =>
-                opt.Count().Filter().Expand().Select().OrderBy().SetMaxTop(50)
-                    .AddModel("odata", GetEdmModel())
-            );
-
-            static IEdmModel GetEdmModel() {
-                var builder = new ODataConventionModelBuilder();
-
-                builder.EntitySet<Supplier>("Suppliers");
-                builder.EntitySet<Product>("Products");
-
-                var category = builder.EntitySet<Category>("Categories");
-                category.EntityType.Ignore(s => s.Picture);
-
-                return builder.GetEdmModel();
-            }
+            //.AddModel("odata", GetEdmModel())
 
             services.AddSwaggerGen((config) => {
                 config.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() {
@@ -88,6 +78,8 @@ namespace ODataDemo.Server {
             app.UseRouting();
 
             app.UseEndpoints(endpoints => {
+                //endpoints.MapODataRoute("odata", "odata", GetEdmModel());
+                //endpoints.Select().Expand().OrderBy().Filter().Count();
 
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
@@ -95,6 +87,16 @@ namespace ODataDemo.Server {
             });
         }
 
+        private static IEdmModel GetEdmModel() {
+            var builder = new ODataConventionModelBuilder();
 
+            builder.EntitySet<Supplier>("Suppliers");
+            builder.EntitySet<Product>("Products");
+
+            var category = builder.EntitySet<Category>("Categories");
+            category.EntityType.Ignore(s => s.Picture);
+
+            return builder.GetEdmModel();
+        }
     }
 }

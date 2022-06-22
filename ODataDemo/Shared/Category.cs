@@ -28,11 +28,11 @@ namespace ODataDemo.Shared {
         public string Description { get; set; }
 
         [Column(TypeName = "image")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        [JsonIgnore]
         public byte[] Picture { get; set; }
 
         [InverseProperty(nameof(Product.Category))]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }
     }
 }

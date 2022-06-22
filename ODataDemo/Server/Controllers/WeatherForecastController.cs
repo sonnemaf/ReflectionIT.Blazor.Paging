@@ -9,8 +9,8 @@ namespace ODataDemo.Server.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase {
-        private static readonly string[] Summaries = new[]
-        {
+
+        private static readonly string[] _summaries = new[] {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
@@ -26,7 +26,7 @@ namespace ODataDemo.Server.Controllers {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = _summaries[rng.Next(_summaries.Length)]
             })
             .ToArray();
         }

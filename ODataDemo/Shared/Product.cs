@@ -36,7 +36,7 @@ namespace ODataDemo.Shared {
 
         [ForeignKey(nameof(SupplierId))]
         [InverseProperty("Products")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        [JsonIgnore]
         public virtual Supplier Supplier { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 #nullable disable
 
 namespace ODataDemo.Shared {
@@ -41,6 +42,7 @@ namespace ODataDemo.Shared {
         public string HomePage { get; set; }
 
         [InverseProperty(nameof(Product.Supplier))]
+        [JsonIgnore]
         public virtual ICollection<Product> Products { get; set; }
     }
 }
